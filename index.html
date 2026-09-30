@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScamShield — Detect Payment Scams Before You Pay</title>
+  <meta name="description" content="Privacy-conscious AI-powered system that identifies suspicious signals before you complete a potentially fraudulent payment. Analyze messages, URLs, and QR codes instantly.">
+  <meta name="keywords" content="scam detection, payment fraud, phishing, UPI scam, QR code fraud, digital payment safety">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+</head>
+<body>
+
+  <!-- Animated background -->
+  <div class="bg-mesh" id="bgMesh"></div>
+  <div class="bg-grid"></div>
+
+  <!-- ====== NAVBAR ====== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-content">
+      <a href="#" class="logo">
+        <div class="logo-shield">🛡️</div>
+        <span class="logo-text">ScamShield</span>
+        <span class="logo-badge">v1.0</span>
+      </a>
+      <div class="nav-links">
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="#privacy" class="nav-link">Privacy</a>
+        <a href="#analyzer" class="nav-cta">Try Now →</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ====== HERO ====== -->
+  <section class="hero" id="home">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <span class="eyebrow-dot"></span>
+          Real-time · Privacy-first · Explainable
+        </div>
+        <h1 class="hero-title">
+          Detect Payment Scams
+          <span class="hero-gradient">Before You Pay</span>
+        </h1>
+        <p class="hero-desc">
+          Paste a suspicious message, enter a link, or upload a QR code.
+          ScamShield analyzes <em>five layers of signals</em> and tells you
+          exactly <strong>why</strong> something is suspicious — before money leaves your account.
+        </p>
+        <div class="hero-actions">
+          <a href="#analyzer" class="btn-primary">
+            <span>Analyze Now</span>
+            <span class="btn-arrow">↓</span>
+          </a>
+          <a href="#how-it-works" class="btn-ghost">See How It Works</a>
+        </div>
+        <div class="hero-trust">
+          <div class="trust-item">
+            <span class="trust-icon">🔒</span>
+            <span>Zero data stored</span>
+          </div>
+          <div class="trust-divider"></div>
+          <div class="trust-item">
+            <span class="trust-icon">⚡</span>
+            <span>Instant analysis</span>
+          </div>
+          <div class="trust-divider"></div>
+          <div class="trust-item">
+            <span class="trust-icon">💡</span>
+            <span>Fully explainable</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="shield-frame">
+          <div class="shield-orbit orbit-1"></div>
+          <div class="shield-orbit orbit-2"></div>
+          <div class="shield-orbit orbit-3"></div>
+          <div class="shield-core-ring"></div>
+          <div class="shield-core">
+            <span class="shield-main-icon">🛡️</span>
+          </div>
+          <div class="orbit-dot dot-1">🔗</div>
+          <div class="orbit-dot dot-2">💬</div>
+          <div class="orbit-dot dot-3">📷</div>
+          <div class="orbit-dot dot-4">⚠️</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating stats -->
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="stat-num" data-target="5">5</div>
+        <div class="stat-label">Analysis Modules</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Data Points Stored</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Explainable AI</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">9+</div>
+        <div class="stat-label">Scam Patterns Caught</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== ANALYZER ====== -->
+  <section class="analyzer-section" id="analyzer">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">🔍 Analysis Engine</div>
+        <h2>Analyze Suspicious Content</h2>
+        <p>No account needed. All analysis happens locally. Nothing is stored or shared.</p>
+      </div>
+
+      <!-- Main Analyzer Card -->
+      <div class="analyzer-card">
+        <!-- Tabs -->
+        <div class="tab-bar" role="tablist">
+          <button class="tab-btn active" data-tab="message" id="tab-btn-message" role="tab" aria-selected="true">
+            <span class="tab-icon">💬</span>
+            <span class="tab-label">Message / Text</span>
+          </button>
+          <button class="tab-btn" data-tab="url" id="tab-btn-url" role="tab" aria-selected="false">
+            <span class="tab-icon">🔗</span>
+            <span class="tab-label">URL / Link</span>
+          </button>
+          <button class="tab-btn" data-tab="qr" id="tab-btn-qr" role="tab" aria-selected="false">
+            <span class="tab-icon">📷</span>
+            <span class="tab-label">QR Code</span>
+          </button>
+          <button class="tab-btn" data-tab="combined" id="tab-btn-combined" role="tab" aria-selected="false">
+            <span class="tab-icon">🔍</span>
+            <span class="tab-label">Full Analysis</span>
+          </button>
+        </div>
+
+        <!-- ===== MESSAGE TAB ===== -->
+        <div class="tab-panel active" id="panel-message" role="tabpanel">
+          <div class="panel-inner">
+            <div class="input-group">
+              <label class="input-label" for="message-input">
+                <span>💬</span> Suspicious Message or Chat
+              </label>
+              <textarea
+                id="message-input"
+                class="text-area"
+                placeholder="Paste the suspicious message here...&#10;&#10;Example: 'Your Amazon account has been compromised. Call our helpline immediately. Our agent will ask for your OTP to verify your identity.'"
+                rows="6"
+                maxlength="3000"
+              ></textarea>
+              <div class="input-footer">
+                <span class="privacy-note">🔒 Never stored or transmitted</span>
+                <span class="char-count" id="msg-char-count">0 / 3000</span>
+              </div>
+            </div>
+            <div class="example-row">
+              <span class="example-label">Try:</span>
+              <button class="example-chip" onclick="loadExample('msg_amazon')">Fake Amazon Refund</button>
+              <button class="example-chip" onclick="loadExample('msg_hdfc')">HDFC Bank Scam</button>
+              <button class="example-chip" onclick="loadExample('msg_lottery')">Lottery Prize Trick</button>
+              <button class="example-chip" onclick="loadExample('msg_otp')">OTP Phishing</button>
+            </div>
+            <button class="analyze-btn" id="btn-analyze-msg" onclick="analyzeMessage()">
+              <span class="btn-inner">
+                <span class="btn-icon-left">🔍</span>
+                Analyze Message
+                <span class="btn-arrow-right">→</span>
+              </span>
+              <span class="btn-shimmer"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== URL TAB ===== -->
+        <div class="tab-panel" id="panel-url" role="tabpanel">
+          <div class="panel-inner">
+            <div class="input-group">
+              <label class="input-label" for="url-input">
+                <span>🔗</span> Suspicious URL or Link
+              </label>
+              <div class="url-input-wrap">
+                <span class="url-prefix-icon">🌐</span>
+                <input
+                  type="text"
+                  id="url-input"
+                  class="url-input"
+                  placeholder="https://amaz0n-refund.xyz/claim?id=12345"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                >
+              </div>
+              <div class="input-footer">
+                <span class="privacy-note">🔒 URL is analyzed structurally — never fetched or opened</span>
+              </div>
+            </div>
+
+            <!-- URL Breakdown Preview -->
+            <div class="url-breakdown" id="url-breakdown" style="display:none">
+              <div class="breakdown-label">URL Structure:</div>
+              <div class="breakdown-parts">
+                <span class="bp-protocol" id="bp-protocol"></span>
+                <span class="bp-domain" id="bp-domain"></span>
+                <span class="bp-path" id="bp-path"></span>
+              </div>
+            </div>
+
+            <div class="example-row">
+              <span class="example-label">Try:</span>
+              <button class="example-chip" onclick="loadExample('url_phishing')">Phishing Domain</button>
+              <button class="example-chip" onclick="loadExample('url_ip')">IP Address URL</button>
+              <button class="example-chip" onclick="loadExample('url_subdomain')">Fake Subdomain Trick</button>
+              <button class="example-chip" onclick="loadExample('url_legit')">Legitimate URL</button>
+            </div>
+            <button class="analyze-btn" id="btn-analyze-url" onclick="analyzeURL()">
+              <span class="btn-inner">
+                <span class="btn-icon-left">🔍</span>
+                Analyze URL
+                <span class="btn-arrow-right">→</span>
+              </span>
+              <span class="btn-shimmer"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== QR TAB ===== -->
+        <div class="tab-panel" id="panel-qr" role="tabpanel">
+          <div class="panel-inner">
+            <!-- Upload zone -->
+            <div class="qr-upload-zone" id="qr-upload-zone">
+              <div class="qr-zone-icon">📷</div>
+              <h3>Upload QR Code Image</h3>
+              <p>Drag & drop or click to select. PNG, JPG, WebP supported.</p>
+              <input type="file" id="qr-file-input" accept="image/*" style="display:none" onchange="handleQRUpload(event)">
+              <button class="upload-btn" onclick="document.getElementById('qr-file-input').click()">
+                Choose Image
+              </button>
+            </div>
+
+            <!-- QR Preview (hidden initially) -->
+            <div class="qr-preview-box" id="qr-preview-box" style="display:none">
+              <div class="qr-preview-row">
+                <div class="qr-image-wrap">
+                  <img id="qr-preview-img" alt="QR Code" class="qr-preview-img">
+                </div>
+                <div class="qr-decode-result">
+                  <div class="decode-label">Decoded Content:</div>
+                  <div class="decode-text" id="qr-decode-text">Decoding...</div>
+                  <div class="decode-type" id="qr-decode-type"></div>
+                </div>
+              </div>
+              <button class="analyze-btn" onclick="analyzeQR()">
+                <span class="btn-inner">
+                  <span class="btn-icon-left">🔍</span>
+                  Analyze QR Code
+                  <span class="btn-arrow-right">→</span>
+                </span>
+                <span class="btn-shimmer"></span>
+              </button>
+            </div>
+
+            <!-- Manual QR Input -->
+            <div class="qr-manual-section" id="qr-manual-section">
+              <div class="or-separator"><span>or enter QR content manually</span></div>
+              <input
+                type="text"
+                id="qr-manual-input"
+                class="url-input"
+                placeholder="upi://pay?pa=merchant@ybl&pn=ShopName&am=500&tn=Refund"
+              >
+              <div class="example-row" style="margin-top: 8px;">
+                <span class="example-label">Try:</span>
+                <button class="example-chip" onclick="loadExample('qr_upi_scam')">Fake UPI Refund QR</button>
+                <button class="example-chip" onclick="loadExample('qr_url_scam')">Phishing URL QR</button>
+                <button class="example-chip" onclick="loadExample('qr_legit')">Legitimate UPI QR</button>
+              </div>
+              <button class="analyze-btn secondary-btn" style="margin-top: 12px;" onclick="analyzeQRManual()">
+                <span class="btn-inner">
+                  <span class="btn-icon-left">🔍</span>
+                  Analyze QR Content
+                </span>
+                <span class="btn-shimmer"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== COMBINED TAB ===== -->
+        <div class="tab-panel" id="panel-combined" role="tabpanel">
+          <div class="panel-inner">
+            <p class="combined-desc">Provide all available context for the most comprehensive multi-signal analysis.</p>
+            <div class="combined-grid">
+              <div class="input-group full-width">
+                <label class="input-label" for="combined-message">
+                  <span>💬</span> Message / Chat
+                </label>
+                <textarea id="combined-message" class="text-area small-area" placeholder="Paste suspicious message..." rows="3"></textarea>
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="combined-url">
+                  <span>🔗</span> URL / Link
+                </label>
+                <input type="text" id="combined-url" class="url-input" placeholder="Suspicious link...">
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="combined-amount">
+                  <span>💰</span> Payment Amount (₹)
+                </label>
+                <input type="number" id="combined-amount" class="url-input" placeholder="e.g. 5000" min="0">
+              </div>
+              <div class="input-group full-width">
+                <label class="input-label" for="combined-payee">
+                  <span>👤</span> Payee / Merchant Name
+                </label>
+                <input type="text" id="combined-payee" class="url-input" placeholder="e.g. Amazon Refund Department">
+              </div>
+            </div>
+            <div class="example-row">
+              <span class="example-label">Load scenario:</span>
+              <button class="example-chip" onclick="loadCombinedExample('full_scam')">Complete Scam Scenario</button>
+              <button class="example-chip" onclick="loadCombinedExample('legitimate')">Legitimate Transaction</button>
+            </div>
+            <button class="analyze-btn" onclick="analyzeAll()">
+              <span class="btn-inner">
+                <span class="btn-icon-left">🔍</span>
+                Run Full Analysis
+                <span class="btn-arrow-right">→</span>
+              </span>
+              <span class="btn-shimmer"></span>
+            </button>
+          </div>
+        </div>
+      </div><!-- end .analyzer-card -->
+
+      <!-- ===== LOADING STATE ===== -->
+      <div class="loading-panel" id="loading-panel" style="display:none">
+        <div class="loading-inner">
+          <div class="loading-ring">
+            <div class="ring-segment"></div>
+            <div class="ring-icon">🛡️</div>
+          </div>
+          <h3 class="loading-title">Analyzing...</h3>
+          <div class="loading-steps" id="loading-steps">
+            <div class="lstep" id="lstep-text">
+              <span class="lstep-dot"></span>
+              <span class="lstep-icon">🔤</span>
+              Scanning text patterns
+            </div>
+            <div class="lstep" id="lstep-url">
+              <span class="lstep-dot"></span>
+              <span class="lstep-icon">🔗</span>
+              Analyzing URL structure
+            </div>
+            <div class="lstep" id="lstep-qr">
+              <span class="lstep-dot"></span>
+              <span class="lstep-icon">📷</span>
+              Inspecting QR metadata
+            </div>
+            <div class="lstep" id="lstep-risk">
+              <span class="lstep-dot"></span>
+              <span class="lstep-icon">⚖️</span>
+              Computing risk score
+            </div>
+            <div class="lstep" id="lstep-explain">
+              <span class="lstep-dot"></span>
+              <span class="lstep-icon">💡</span>
+              Generating explanation
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== RESULTS DASHBOARD ===== -->
+      <div class="results-panel" id="results-panel" style="display:none">
+
+        <!-- Risk Score Card -->
+        <div class="result-card risk-card" id="risk-overview-card">
+          <div class="risk-card-top">
+            <div class="risk-badge-wrap">
+              <div class="risk-badge" id="risk-badge">
+                <span class="risk-badge-icon" id="risk-badge-icon">⚠️</span>
+                <span class="risk-badge-label" id="risk-badge-label">ANALYZING</span>
+              </div>
+              <div class="risk-subtitle" id="risk-subtitle">Checking signals...</div>
+            </div>
+            <div class="gauge-wrap">
+              <svg class="gauge-svg" viewBox="0 0 200 130" aria-label="Risk Score Gauge">
+                <defs>
+                  <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#00e676"/>
+                    <stop offset="50%" style="stop-color:#ffc107"/>
+                    <stop offset="100%" style="stop-color:#ff1744"/>
+                  </linearGradient>
+                </defs>
+              <!-- Track: 270° arc from (25,110) up through top to (175,110) -->
+                <path class="gauge-track" d="M 25 110 A 80 80 0 1 1 175 110"
+                  stroke="rgba(255,255,255,0.06)" stroke-width="14" fill="none" stroke-linecap="round"/>
+                <!-- Fill arc -->
+                <path class="gauge-arc" id="gauge-arc" d="M 25 110 A 80 80 0 1 1 175 110"
+                  stroke="url(#gaugeGrad)" stroke-width="14" fill="none" stroke-linecap="round"
+                  stroke-dasharray="377" stroke-dashoffset="377"/>
+                <!-- Score number -->
+                <text x="100" y="100" text-anchor="middle" class="gauge-score-text" id="gauge-score-text">0</text>
+                <text x="100" y="118" text-anchor="middle" class="gauge-label-text">/ 100</text>
+              </svg>
+            </div>
+          </div>
+          <div class="risk-summary" id="risk-summary">Analyzing content...</div>
+        </div>
+
+        <!-- Signals -->
+        <div class="result-card" id="signals-card">
+          <div class="card-header">
+            <h3 class="card-title">🚨 Triggered Warning Signals</h3>
+            <span class="signal-count-badge" id="signal-count-badge">0 signals</span>
+          </div>
+          <div class="signals-list" id="signals-list"></div>
+        </div>
+
+        <!-- What To Do -->
+        <div class="result-card" id="action-card">
+          <h3 class="card-title">✅ What You Should Do</h3>
+          <div class="action-list" id="action-list"></div>
+        </div>
+
+        <!-- Why Suspicious -->
+        <div class="result-card" id="explain-card">
+          <h3 class="card-title">🧠 Why This Is Suspicious</h3>
+          <div class="explain-text" id="explain-text"></div>
+        </div>
+
+        <!-- Safe Alternatives -->
+        <div class="result-card" id="safe-card">
+          <h3 class="card-title">🔒 Stay Safe</h3>
+          <div class="safe-list" id="safe-list"></div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="result-btns">
+          <button class="res-btn res-btn-primary" onclick="resetAnalysis()" id="btn-reset">
+            🔍 Analyze Another
+          </button>
+          <button class="res-btn res-btn-secondary" onclick="copyReport()" id="btn-copy">
+            📋 Copy Report
+          </button>
+          <button class="res-btn res-btn-danger" onclick="reportScam()" id="btn-report">
+            🚨 Report Scam
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== HOW IT WORKS ====== -->
+  <section class="modules-section" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">⚙️ Analysis Engine</div>
+        <h2>How ScamShield Works</h2>
+        <p>Five independent analysis layers work together to catch scams from every angle.</p>
+      </div>
+      <div class="modules-grid">
+        <div class="module-card" data-module="1">
+          <div class="module-num">01</div>
+          <div class="module-icon">🔤</div>
+          <h3>NLP Text Analysis</h3>
+          <p>Detects urgency language, impersonation tactics, OTP/credential requests, prize baits, fake authority claims, and social engineering patterns.</p>
+          <div class="module-chips">
+            <span>Urgency Detection</span>
+            <span>OTP Tricks</span>
+            <span>Impersonation</span>
+            <span>Fear Tactics</span>
+          </div>
+        </div>
+        <div class="module-card" data-module="2">
+          <div class="module-num">02</div>
+          <div class="module-icon">🔗</div>
+          <h3>URL / Domain Analysis</h3>
+          <p>Identifies lookalike domains via Levenshtein distance, homoglyph substitutions, suspicious TLDs, IP-based URLs, URL shorteners, and phishing path patterns.</p>
+          <div class="module-chips">
+            <span>Lookalike Domains</span>
+            <span>Homoglyphs</span>
+            <span>Suspicious TLDs</span>
+            <span>IP URLs</span>
+          </div>
+        </div>
+        <div class="module-card" data-module="3">
+          <div class="module-num">03</div>
+          <div class="module-icon">📷</div>
+          <h3>QR Code Analysis</h3>
+          <p>Decodes QR payloads in-browser, validates UPI VPAs, detects the notorious "scan to receive" trick, embedded phishing URLs, and suspicious transaction metadata.</p>
+          <div class="module-chips">
+            <span>UPI Validation</span>
+            <span>Pay/Receive Trick</span>
+            <span>Embedded URLs</span>
+            <span>Amount Flags</span>
+          </div>
+        </div>
+        <div class="module-card" data-module="4">
+          <div class="module-num">04</div>
+          <div class="module-icon">🧠</div>
+          <h3>Behavioural Context</h3>
+          <p>Analyzes payment context: amount vs. stated purpose mismatches, payee name impersonation, advance-fee patterns, and high-value transaction flags.</p>
+          <div class="module-chips">
+            <span>Amount Mismatch</span>
+            <span>Payee Patterns</span>
+            <span>Advance Fee</span>
+            <span>Context Analysis</span>
+          </div>
+        </div>
+        <div class="module-card" data-module="5">
+          <div class="module-num">05</div>
+          <div class="module-icon">⚖️</div>
+          <h3>Risk Fusion Engine</h3>
+          <p>Combines all signals using a weighted scoring model. Every signal contribution is fully transparent — you see exactly what triggered the warning and why.</p>
+          <div class="module-chips">
+            <span>Weighted Scoring</span>
+            <span>Explainable AI</span>
+            <span>Multi-signal Fusion</span>
+            <span>4-tier Risk</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Demo scenarios -->
+      <div class="scenarios-section">
+        <h3 class="scenarios-title">Scam Patterns We Detect</h3>
+        <div class="scenarios-grid">
+          <div class="scenario-item">
+            <span class="scenario-icon">🛒</span>
+            <span>Fake e-commerce refunds</span>
+          </div>
+          <div class="scenario-item">
+            <span class="scenario-icon">🏦</span>
+            <span>Bank impersonation calls</span>
+          </div>
+          <div class="scenario-item">
+            <span class="scenario-icon">📷</span>
+            <span>Malicious QR codes</span>
+          </div>
+          <div class="scenario-item">
+            <span class="scenario-icon">🎁</span>
+            <span>Fake prize / lottery</span>
+          </div>
+          <div class="scenario-item">
+            <span class="scenario-icon">🔐</span>
+            <span>OTP phishing</span>
+          </div>
+          <div class="scenario-item">
+            <span class="scenario-icon">🌐</span>
+            <span>Phishing websites</span>
+          </div>
+          <div class="scenario-item">
+            <span class="scenario-icon">💰</span>
+            <span>Advance fee fraud</span>
+          </div>
+          <div class="scenario-item">
+            <span class="scenario-icon">🤖</span>
+            <span>Remote access scams</span>
+          </div>
+          <div class="scenario-item">
+            <span class="scenario-icon">🏛️</span>
+            <span>Government impersonation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== PRIVACY ====== -->
+  <section class="privacy-section" id="privacy">
+    <div class="container">
+      <div class="privacy-card">
+        <div class="privacy-header">
+          <div class="privacy-big-icon">🔐</div>
+          <h2>Privacy First, Always</h2>
+          <p>ScamShield was designed from the ground up to protect your privacy while analyzing potential scams.</p>
+        </div>
+        <div class="privacy-pillars">
+          <div class="pillar">
+            <div class="pillar-icon">🚫</div>
+            <h4>Zero Data Storage</h4>
+            <p>Everything you enter is analyzed in your browser and immediately discarded. No logs, no database, no history.</p>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">👤</div>
+            <h4>No Account Required</h4>
+            <p>No sign-up, no email, no personal information. Open the page and start analyzing immediately.</p>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">🔍</div>
+            <h4>URLs Never Fetched</h4>
+            <p>Suspicious URLs are analyzed by their structural properties — they are never actually visited or requested.</p>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">📊</div>
+            <h4>No Tracking</h4>
+            <p>Zero analytics, zero telemetry, zero third-party scripts that could access your submitted content.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span>🛡️</span>
+          <span class="footer-brand-name">ScamShield</span>
+        </div>
+        <p class="footer-desc">Protecting digital payments with privacy-first, explainable AI.</p>
+        <div class="footer-chips">
+          <span class="footer-chip">Privacy First</span>
+          <span class="footer-chip">No Data Collection</span>
+          <span class="footer-chip">Open Analysis</span>
+          <span class="footer-chip">Free to Use</span>
+        </div>
+        <div class="footer-note">
+          ScamShield provides risk assessments based on pattern analysis. Always verify through official channels before making payments.
+          Report cybercrime: <strong>1930</strong> | <strong>cybercrime.gov.in</strong>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ====== TOAST ====== -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive">
+    <span class="toast-icon" id="toast-icon">✅</span>
+    <span class="toast-msg" id="toast-msg">Done!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/analyzers.js"></script>
+  <script src="js/risk-engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
